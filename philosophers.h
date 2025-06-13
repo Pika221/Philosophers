@@ -41,5 +41,15 @@ long	get_time(void);
 void	ft_usleep(long duration);
 int		init_program(int ac, char **av, t_args *args);
 int	create_philos(t_args *args, t_philo **philos, pthread_mutex_t **forks);
+void	eating(t_philo *philo);
+void	sleeping(t_philo *philo);
+void	thinking(t_philo *philo);
+void	*routine(void *arg);
+int	check_death(t_philo *philo, t_args *args);
+int	check_full(t_philo *philos, t_args *args);
+int	monitor(t_philo *philos, t_args *args);
+void	join_threads(t_philo *philos, int philo_count);
+void cleanup(t_philo *philos, pthread_mutex_t *forks, int philo_count, t_args *args);
+int start_threads(t_philo *philos, int count);
 
 #endif
