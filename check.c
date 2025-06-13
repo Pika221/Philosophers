@@ -1,4 +1,4 @@
-#include "philo.h"
+#include "philosophers.h"
 
 static int ft_isdigit(int a)
 {
@@ -22,7 +22,7 @@ static int check_num(char *a)
     return (1);
 }
 
-static long    ft_atoi(char *s)
+long    ft_atoi(char *s)
 {
     long    num;
     int     sign;
@@ -45,23 +45,23 @@ static long    ft_atoi(char *s)
     }
     return (num * sign);
 }
-int  check_error(int ac, char **av)
+char  *check_error(int ac, char **av)
 {
     long num;
 
     if (ac != 5 && ac != 6)
-        return (printf("Invalid arguments count.\n"));
+        return ("Invalid arguments count.\n");
     while (ac > 0 && --ac)
     {
         if (!check_num(av[ac]))
-            return (printf("Invalid arguments\n"));
+            return ("Invalid arguments\n");
         num = ft_atoi(av[ac]);
         if (ac == 1 && num > PHILO_MAX)
-            return (printf("Max philosopher count is 200.\n"));
+            return ("Max philosopher count is 200.\n");
         if (ac == 1 && num < PHILO_MIN)
-            return(printf("Min philosophers count is 1.\n"));
+            return("Min philosophers count is 1.\n");
         if (num < 1 || num > MAX_INT)
-            return(printf("Please enter less than MAX_INT and positive number.\n"));
+            return("Please enter less than MAX_INT and positive number.\n");
     }
-    return (0);
+    return (NULL);
 }

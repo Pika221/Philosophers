@@ -1,32 +1,37 @@
-#include "philo.h"
-//pthread_mutex_destroy ve freeleme yapılacak
-static  void    free_program(t_program *program)
-{
-
-}
-static int free_n_exit(int ac, char **av, t_program *program)
-{
-    if (start_program(ac, av, program)) //yapılacak
-        printf("Program couldn't initialize.\n");
-    else if (create_philos(program)) //yapılacak
-        printf("Program couldn't create philosophers.\n");
-    free_program(program); //yapılacak
-    return (1);
-}
+#include "philosophers.h"
 
 int main(int ac, char **av)
 {
-    t_program   *program;
+    t_args          args;
+    t_philo         *philos;
+    pthread_mutex_t *forks;
 
     // error yoksa programı başlat error varsa hata çıktısı ver
-    if (!check_error(ac, av))
-        printf("succsess\n"); //start_program(ac, av, program);
-    else
+    if (check_error(ac, av))
+	{
+		printf("%s", check_error(ac, av));
+        return (1); //start_program(ac, av, program);
+	}
+    if (init_program(ac, av, &args))
+    {
+	    write(2, "Program initializing is failed\n", 31);
+        return (1); //start_program(ac, av, program);
+	}
+    if (create_philos(&args, &philos, &forks))
+    {
+        write(2, "Philo creating is failed\n", 25);
         return (1);
-    //if (start_program(ac, av, program))
-    //    free_n_exit();    
-    //if (create_philos(program))
-    //    free_n_exit();
-    //free_program(program);
+    }
+    printf("succsess\n");
+    free (philos);
+    free (forks);
     return (0);
 }
+/*int main(void)
+{
+	long start = get_time();
+	printf("Başlangıç: %ld\n", start);
+	ft_usleep(1500); // 1.5 saniye bekle
+	printf("Bitiş: %ld\n", get_time());
+	return (0);
+}*/
