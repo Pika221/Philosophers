@@ -3,73 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <hialpagu@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hialpagu <hialpagu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/13 16:09:17 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/13 16:09:17 by marvin           ###   ########.fr       */
+/*   Created: 2025/06/21 20:15:33 by hialpagu          #+#    #+#             */
+/*   Updated: 2025/06/21 20:30:09 by hialpagu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	eating(t_philo *philo)
+void	*survivor(void *arg)
 {
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
 	pthread_mutex_lock(philo->left_fork);
-	pthread_mutex_lock(&philo->args->print_mutex);
-	printf("%ld %d has taken a fork\n",
-		get_time() - philo->args->start_time, philo->id);
-	pthread_mutex_unlock(&philo->args->print_mutex);
-	pthread_mutex_lock(philo->right_fork);
-	pthread_mutex_lock(&philo->args->print_mutex);
-	printf("%ld %d has taken a fork\n",
-		get_time() - philo->args->start_time, philo->id);
-	printf("%ld %d is eating\n",
-		get_time() - philo->args->start_time, philo->id);
-	pthread_mutex_unlock(&philo->args->print_mutex);
-	philo->last_meal = get_time();
-	ft_usleep(philo->args->time_to_eat);
-	philo->meal_count++;
+	print_status(philo, "has taken a fork\n");
 	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	return (NULL);
 }
 
-void	sleeping(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->args->print_mutex);
-	printf("%ld %d is sleeping\n",
-		get_time() - philo->args->start_time, philo->id);
-	pthread_mutex_unlock(&philo->args->print_mutex);
-	ft_usleep(philo->args->time_to_sleep);
-}
-
-void	thinking(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->args->print_mutex);
-	printf("%ld %d is thinking\n",
-		get_time() - philo->args->start_time, philo->id);
-	pthread_mutex_unlock(&philo->args->print_mutex);
-}
-
-void	*routine(void *arg)
+void	*staying_alive(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		ft_usleep(1);
-		
+		ft_usleep(10);
 	while (1)
 	{
-		pthread_mutex_lock(&philo->args->death_mutex);
-		if (philo->args->death)
-		{
-			pthread_mutex_unlock(&philo->args->death_mutex);
-			break;
-		}
-		pthread_mutex_unlock(&philo->args->death_mutex);
+		pthread_mutex_lock(&philo->args->status_mutex);
+		pthread_mutex_unlock(&philo->args->status_mutex);
+		if (!philo->alive || !philo->must_eat)
+			break ;
 		eating(philo);
 		sleeping(philo);
 		thinking(philo);
 	}
 	return (NULL);
+}
+
+void	start_routine(t_args	*prog)
+{
+	int	i;
+
+	i = 0;
+	if (prog->philo_count == 1)
+	{
+		pthread_create(&prog->philo[i].thread, NULL,
+			survivor, &prog->philo[i]);
+		i++;
+	}
+	while (i < prog->philo_count)
+	{	
+		pthread_create(&prog->philo[i].thread, NULL,
+			staying_alive, &prog->philo[i]);
+		i++;
+	}
+	routine(prog);
+	i = 0;
+	while (i < prog->philo_count)
+	{
+		pthread_join(prog->philo[i].thread, NULL);
+		i++;
+	}
 }

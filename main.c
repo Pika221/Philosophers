@@ -1,51 +1,43 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hialpagu <hialpagu@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/21 20:15:23 by hialpagu          #+#    #+#             */
+/*   Updated: 2025/06/21 20:29:13 by hialpagu         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
-void join_threads(t_philo *philos, int philo_count)
+static void	free_n_exit(t_args *prog)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < philo_count)
-    {
-        pthread_join(philos[i].thread, NULL);
-        i++;
-    }
+	i = 0;
+	while (i < prog->philo_count)
+	{
+		pthread_mutex_destroy(&prog->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&prog->print_mutex);
+	pthread_mutex_destroy(&prog->status_mutex);
+	free(prog->forks);
+	free(prog->philo);
 }
 
-
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-    t_args          args;
-    t_philo         *philos;
-    pthread_mutex_t *forks;
+	t_args	args;
 
-    if (check_error(ac, av))
-	{
-		printf("%s", check_error(ac, av));
-        return (1);
-	}
-    if (init_program(ac, av, &args))
-    {
-	    write(2, "Program initializing failed\n", 28);
-        return (1);
-	}
-    if (create_philos(&args, &philos, &forks))
-    {
-        write(2, "Philo creating failed\n", 22);
-        return (1);
-    }
-    if (start_threads(philos, args.philo_count))
-    {
-        write(2, "Thread creation failed\n", 23);
-        cleanup(philos, forks, args.philo_count, &args);
-        free(philos);
-        free(forks);
-        return (1);
-    }
-    monitor(philos, &args);
-    join_threads(philos, args.philo_count);
-    cleanup(philos, forks, args.philo_count, &args);
-    free(philos);
-    free(forks);
-    return (0);
+	if (arg_check(ac, av))
+		return (1);
+	if (init_args(ac, av, &args))
+		return (1);
+	args.starting_time = get_time();
+	start_routine(&args);
+	free_n_exit(&args);
+	return (0);
 }
