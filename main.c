@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hialpagu <hialpagu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <hialpagu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:15:23 by hialpagu          #+#    #+#             */
-/*   Updated: 2025/06/21 20:29:13 by hialpagu         ###   ########.fr       */
+/*   Updated: 2025/06/22 20:52:15 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	main(int ac, char **av)
 		return (1);
 	if (init_args(ac, av, &args))
 		return (1);
-	args.starting_time = get_time();
 	start_routine(&args);
 	free_n_exit(&args);
 	return (0);
