@@ -4,19 +4,21 @@ CFLAGS = -Wall -Wextra -Werror
 SRCS = arg_check.c init.c life_circle.c main.c monitoring.c routine.c utils.c
 OBJS = $(SRCS:.c=.o)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(NAME): $(OBJS)
-	$(CC) $(OBJS) $(CFLAGS) -o $(NAME)
+.c.o:
+	@$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
 all: $(NAME)
 
+$(NAME): $(OBJS)
+	@$(CC) $(OBJS) $(CFLAGS) -o $(NAME)
+	@echo Done!
+
 clean:
-	rm -rf $(OBJS)
+	@rm -f $(OBJS)
+	@echo Cleaned!
 
 fclean: clean
-	rm -rf $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 
