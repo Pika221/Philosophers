@@ -6,7 +6,7 @@
 /*   By: marvin <hialpagu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:15:17 by hialpagu          #+#    #+#             */
-/*   Updated: 2025/06/22 20:52:23 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/22 20:55:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,6 @@ int	init_args(int ac, char **av, t_args *args)
 		return (1);
 	if (philo_init(ac, av, args))
 		return (1);
-	args.starting_time = get_time();
+	args->starting_time = get_time();
 	return (0);
 }
