@@ -1,11 +1,11 @@
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror
 SRCS = arg_check.c init.c life_circle.c main.c monitoring.c routine.c utils.c
 OBJS = $(SRCS:.c=.o)
 
-.c.o:
-	@$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
+%.o:%.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)
 

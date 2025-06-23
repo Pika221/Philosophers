@@ -6,7 +6,7 @@
 /*   By: hialpagu <hialpagu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 20:15:33 by hialpagu          #+#    #+#             */
-/*   Updated: 2025/06/21 20:30:09 by hialpagu         ###   ########.fr       */
+/*   Updated: 2025/06/23 18:20:30 by hialpagu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,12 @@ void	*staying_alive(void *arg)
 	while (1)
 	{
 		pthread_mutex_lock(&philo->args->status_mutex);
-		pthread_mutex_unlock(&philo->args->status_mutex);
 		if (!philo->alive || !philo->must_eat)
+		{
+			pthread_mutex_unlock(&philo->args->status_mutex);
 			break ;
+		}
+		pthread_mutex_unlock(&philo->args->status_mutex);
 		eating(philo);
 		sleeping(philo);
 		thinking(philo);
